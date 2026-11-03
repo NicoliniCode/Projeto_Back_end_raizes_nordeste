@@ -24,4 +24,48 @@ model Usuario {
   unidadeId Int?
   ativo     Boolean  @default(true)
   criadoEm  DateTime @default(now())
+  unidade   Unidade? @relation(fields: [unidadeId], references: [id])
+}
+
+model Unidade {
+  id       Int            @id @default(autoincrement())
+  nome     String         @db.VarChar(120)
+  cidade   String         @db.VarChar(120)
+  ativo    Boolean        @default(true)
+  usuarios Usuario[]
+  cardapio ItemCardapio[]
+  estoques Estoque[]
+}
+
+model Produto {
+  id        Int            @id @default(autoincrement())
+  nome      String         @db.VarChar(120)
+  descricao String?        @db.VarChar(500)
+  ativo     Boolean        @default(true)
+  cardapios ItemCardapio[]
+  estoques  Estoque[]
+}
+
+model ItemCardapio {
+  id         Int     @id @default(autoincrement())
+  unidadeId  Int
+  produtoId  Int
+  preco      Decimal @db.Decimal(10, 2)
+  disponivel Boolean @default(true)
+  unidade    Unidade @relation(fields: [unidadeId], references: [id])
+  produto    Produto @relation(fields: [produtoId], references: [id])
+
+  @@unique([unidadeId, produtoId])
+  @@index([unidadeId, disponivel])
+}
+
+model Estoque {
+  id         Int     @id @default(autoincrement())
+  unidadeId  Int
+  produtoId  Int
+  quantidade Int     @default(0)
+  unidade    Unidade @relation(fields: [unidadeId], references: [id])
+  produto    Produto @relation(fields: [produtoId], references: [id])
+
+  @@unique([unidadeId, produtoId])
 }
