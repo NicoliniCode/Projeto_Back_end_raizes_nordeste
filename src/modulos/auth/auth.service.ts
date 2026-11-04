@@ -8,10 +8,12 @@ import type { DadosLogin } from "./auth.schema";
 const DURACAO_TOKEN_SEGUNDOS = 2 * 60 * 60; // 2 horas
 
 export async function fazerLogin({ email, senha }: DadosLogin) {
+    
     const usuario = await prisma.usuario.findUnique({ where: { email: email.toLowerCase() } });
 
     // Mesma resposta para e-mail inexistente e senha errada, para não revelar quais e-mails existem
     const senhaConfere = usuario?.ativo && (await bcrypt.compare(senha, usuario.senhaHash));
+
     if (!usuario || !senhaConfere) {
         throw new ErroApp(401, "CREDENCIAIS_INVALIDAS", "E-mail ou senha inválidos.");
     }

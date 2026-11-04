@@ -9,6 +9,7 @@ import { rotas } from "./rotas";
 import { rotaNaoEncontrada, tratarErros } from "./infra/middlewares/tratarErros";
 
 export function criarApp() {
+    
     const app = express();
 
     app.use(helmet({ contentSecurityPolicy: false })); // sem CSP para o Swagger UI carregar
@@ -18,6 +19,7 @@ export function criarApp() {
     const documentacao = YAML.parse(
         readFileSync(resolve(process.cwd(), "docs", "openapi.yaml"), "utf8"),
     );
+
     app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(documentacao));
     app.get("/api/openapi.json", (_req, res) => res.json(documentacao));
 

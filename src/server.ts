@@ -3,6 +3,7 @@ import { criarApp } from "./app";
 import { prisma } from "./infra/banco/prisma";
 
 async function iniciar() {
+    
     await prisma.$connect();
 
     const servidor = criarApp().listen(ambiente.PORT, () => {
