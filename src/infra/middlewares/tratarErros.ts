@@ -9,6 +9,7 @@ export const rotaNaoEncontrada: RequestHandler = (_req, _res, next) => {
 };
 
 export const tratarErros: ErrorRequestHandler = (erro: unknown, req, res, _next) => {
+
     let status = 500;
     let codigo = "ERRO_INTERNO";
     let mensagem = "Ocorreu um erro interno.";
@@ -17,21 +18,26 @@ export const tratarErros: ErrorRequestHandler = (erro: unknown, req, res, _next)
     if (erro instanceof ErroApp) {
         ({ status, codigo, detalhes } = erro);
         mensagem = erro.message;
-    } else if (erro instanceof ZodError) {
+    } 
+    else if (erro instanceof ZodError) {
         status = 422;
         codigo = "VALIDACAO_DADOS";
         mensagem = "Dados inválidos.";
         detalhes = erro.issues.map((item) => ({ field: item.path.join("."), issue: item.message }));
+
     } else if (erro instanceof SyntaxError && "body" in erro) {
         status = 400;
         codigo = "JSON_INVALIDO";
-        mensagem = "O corpo do JSON está malformado.";
+        mensagem = "Corpo JSON malformado.";
+
     } else if (erro instanceof Prisma.PrismaClientKnownRequestError) {
+        
         const conhecidos: Record<string, [number, string, string]> = {
             P2002: [409, "REGISTRO_DUPLICADO", "O registro já existe."],
             P2025: [404, "NAO_ENCONTRADO", "Registro não encontrado."],
             P2034: [409, "CONCORRENCIA", "Conflito concorrente; tente novamente."],
         };
+
         if (conhecidos[erro.code]) [status, codigo, mensagem] = conhecidos[erro.code];
     }
 
