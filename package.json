@@ -1,13 +1,18 @@
 {
   "name": "raizes-do-nordeste",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "API REST da rede Raízes do Nordeste (pagamentos simulados)",
+  "main": "dist/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/server.ts",
+    "build": "prisma generate && tsc -p tsconfig.json",
+    "start": "node dist/server.js",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "db:seed": "tsx prisma/seed.ts"
+    "test": "vitest run",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:studio": "prisma studio"
   },
   "keywords": [],
   "author": "",
@@ -34,6 +39,7 @@
     "@types/swagger-ui-express": "^4.1.8",
     "prisma": "^6.19.3",
     "tsx": "^4.23.15",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^2.1.9"
   }
 }
